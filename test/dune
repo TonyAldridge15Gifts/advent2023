@@ -1,0 +1,3 @@
+(test
+ (name advent2023)
+ (libraries advent2023 core alcotest))
