@@ -6,3 +6,4 @@ let () =
   printf "%i\n" (Advent2023.Day2.day2 { red = 12; green = 13; blue = 14});
   printf "%i\n" (Advent2023.Day2.day2_2 ());
   printf "%i\n" (Advent2023.Day3.day3 ());
+  printf "%i\n" (Advent2023.Day3.day3_2 ());
