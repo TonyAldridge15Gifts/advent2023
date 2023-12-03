@@ -77,3 +77,38 @@ let day2 color_and_count_constraint =
   | Some x -> x
   | None -> 0
 
+let rec minimum_for_pull current pull =
+  match pull with
+  | color_and_count :: rest ->
+    begin
+      match color_and_count with
+      | Red, r -> minimum_for_pull {
+        current with red = current.red + r
+      } rest
+      | Blue, b -> minimum_for_pull {
+        current with blue = current.blue + b
+      } rest
+      | Green, g -> minimum_for_pull {
+        current with green = current.green + g
+      } rest
+    end
+  | [] -> current
+
+let minimum_of_two a b =
+  {
+    red = max a.red b.red;
+    green = max a.green b.green;
+    blue = max a.blue b.blue;
+  }
+
+let minimum_for_game game =
+  List.reduce_exn ~f:minimum_of_two (List.map ~f:(minimum_for_pull { red = 0; green = 0; blue = 0 }) game.pulls)
+
+let game_power game =
+  let minimums = minimum_for_game game in
+  minimums.red * minimums.green * minimums.blue
+
+let day2_2 () =
+  let lines = In_channel.read_lines "./data/day2.txt" in
+  let games = parse_all lines in
+  List.reduce_exn ~f:(+) (List.map ~f:game_power games)
