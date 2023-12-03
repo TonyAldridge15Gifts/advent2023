@@ -19,7 +19,7 @@
  (name advent2023)
  (synopsis "A short synopsis")
  (description "A longer description")
- (depends ocaml dune core (alcotest :with-test))
+ (depends ocaml dune core re2 (alcotest :with-test))
  (tags
   (topics "to describe" your project)))
 
