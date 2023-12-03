@@ -66,12 +66,9 @@ module Complex_digit_finder = struct
   ]
 end
 
-(* Run it *)
-let () =
-  let open Alcotest in
-  run "Day1" [
-    "is_digit", Is_digit.tests;
-    "simple_digit_finder", Simple_digit_finder.tests;
-    "find_stringy_digit", Find_stringy_digit.tests;
-    "complex_digit_finder", Complex_digit_finder.tests;
-  ]
+let tests = [
+  "is_digit", Is_digit.tests;
+  "simple_digit_finder", Simple_digit_finder.tests;
+  "find_stringy_digit", Find_stringy_digit.tests;
+  "complex_digit_finder", Complex_digit_finder.tests;
+]
