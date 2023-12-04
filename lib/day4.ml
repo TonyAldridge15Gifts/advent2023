@@ -48,6 +48,7 @@ module Scratchcard = struct
     | 0 -> []
     | _ -> 
       List.slice all_cards card_number (card_number + matched_count)
+
 end
 
 let day4 () =
@@ -59,8 +60,9 @@ let day4 () =
 let day4_2 () =
   let lines = In_channel.read_lines "./data/day4.txt" in
   let parsed = List.filter_map ~f:Scratchcard.parse lines in
+  let memo_find = Memo.general (Scratchcard.find_subsequent_cards parsed) in
   let rec recursive_count active_cards current_score =
-    let next_lines = List.map active_cards ~f:(Scratchcard.find_subsequent_cards parsed) in
+    let next_lines = List.map active_cards ~f:memo_find in
     let flattened = List.concat next_lines in
     match flattened with
     | [] -> current_score
