@@ -1,3 +1,4 @@
 (test
  (name advent2023_test)
- (libraries advent2023 core alcotest))
+ (libraries advent2023 core alcotest)
+ (preprocess (pps ppx_jane)))
