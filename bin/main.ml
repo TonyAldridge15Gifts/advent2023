@@ -10,3 +10,4 @@ let () =
   printf "%i\n" (Advent2023.Day4.day4 ());
   printf "%i\n" (Advent2023.Day4.day4_2 ());
   printf "%i\n" (Advent2023.Day5.day5 ());
+  printf "%i\n" (Advent2023.Day7.day7 ());

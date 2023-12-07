@@ -7,7 +7,7 @@ let pair_matcher = Re2.create_exn "([0-9]+) ([0-9]+)"
 exception Bad_seeds of string
 
 let parse_seeds line =
-  Re2.find_all_exn number_matcher line |> List.map ~f:Int.of_string
+  Parser.find_all_matches number_matcher line |> List.map ~f:Int.of_string
 
 module Range = struct
   type t = {
@@ -63,7 +63,7 @@ module Mapping = struct
     exception Bad_line of string
 
     let parse_line line : t = 
-      match Re2.find_all_exn number_matcher line |> List.map ~f:Int.of_string with
+      match Parser.find_all_matches number_matcher line |> List.map ~f:Int.of_string with
       | [destination_start; source_start; range] -> {
         source=(Range.make source_start range);
         destination=(Range.make destination_start range);
@@ -76,11 +76,11 @@ module Mapping = struct
       else
         None
 
-    let map_range (t : t) (input : Range.t) : Range.t list =
+    (*let map_range (t : t) (input : Range.t) : Range.t list =
       let { matched; before; after } : Range.intersection_and_remainder_result = Range.intersection_and_remainder input t.source in
       (* rebase Matched to the destination range *)
       (* return before and after *)
-      []
+      []*)
   end
 
   type t = {
@@ -93,14 +93,9 @@ module Mapping = struct
   exception Bad_title of string
 
   let parse_title line =
-    match Re2.get_matches title_matcher line with
-    | Ok (matched :: _) ->
-      begin
-        match Re2.Match.get_all (Re2.without_trailing_none matched) with
-        | [| _ ; (Some to_group) ; (Some from_group) |] ->
-            from_group, to_group
-        | _ -> raise (Bad_title line)
-      end
+    match Parser.find_all_submatches title_matcher line with
+    | [_ ; (Some to_group) ; (Some from_group)] :: _ ->
+      from_group, to_group
     | _ -> raise (Bad_title line)
 
   let parse_mapping lines : (t * string list) =
@@ -126,16 +121,13 @@ module Mapping = struct
 end
 
 let parse_seed_ranges line =
-  match Re2.get_matches pair_matcher line with
-  | Ok matches ->
-    List.map matches ~f:(fun matched ->
-      let match_array = Re2.Match.get_all (Re2.without_trailing_none matched) in
-      (List.of_array match_array) |> List.tl_exn |> List.filter_opt |> (function
-        | [start; range] -> Range.from_start_and_count (Int.of_string start) (Int.of_string range)
-        | _ -> raise (Bad_seeds line)
-      )
+  let matches = Parser.find_all_submatches pair_matcher line in
+  List.map matches ~f:(fun matched ->
+    matched |> List.tl_exn |> List.filter_opt |> (function
+      | [start; range] -> Range.from_start_and_count (Int.of_string start) (Int.of_string range)
+      | _ -> raise (Bad_seeds line)
     )
-  | _ -> raise (Bad_seeds line)
+  ) 
 
 let parse lines =
   let seeds = parse_seeds (List.hd_exn lines) in
