@@ -6,5 +6,6 @@ let () =
     Day1_test.tests;
     Day2_test.tests;
     Day5_test.tests;
+    Day7_test.tests;
   ] in
   run "Advent2023" tests
